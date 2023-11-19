@@ -75,6 +75,10 @@ let CityMarketService = class CityMarketService {
         if (!city) {
             throw new business_errors_1.BusinessLogicException("La ciudad no fue encontrada", business_errors_1.BusinessError.NOT_FOUND);
         }
+        const isMarketAssociated = city.markets.find((market) => market.id === marketId);
+        if (!isMarketAssociated) {
+            throw new business_errors_1.BusinessLogicException("El supermercado no se encuentra asociado", business_errors_1.BusinessError.NOT_FOUND);
+        }
         city.markets = city.markets.filter((market) => market.id !== marketId);
         return await this.cityRepository.save(city);
     }

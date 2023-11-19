@@ -86,7 +86,6 @@ describe('City Service', () => {
     expect(foundCity.name).toEqual(requiredCity.name);
   });
 
-
   it('should not be able to find a city if it does not exist', async () => {
     try {
       const foundCity: CityEntity = await service.findOne("987654345");
@@ -110,6 +109,16 @@ describe('City Service', () => {
       expect(foundCity).toBeNull();
     } catch (error) {
       expect(error).toHaveProperty("message", "La ciudad no fue encontrada");
+    }
+  });
+
+  it('should not be able to update a city if it belongs to Colombia', async () => {
+    try {
+      const [ cityToUpdate ] = cities;
+      const foundCity: CityEntity = await service.update({...cityToUpdate, country: "Colombia"});
+      expect(foundCity).toBeNull();
+    } catch (error) {
+      expect(error).toHaveProperty("message", "La ciudad debe pertenecer a Argentina, Ecuador o Paraguay")
     }
   });
 

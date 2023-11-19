@@ -43,6 +43,21 @@ describe('Market Service', () => {
     expect(service).toBeDefined();
   });
 
+  it('should not be able to create a market if its name is less than 10 characters', async () => {
+    try {
+      const newMarket = {
+        name: 'Market',
+        latitude: 2,
+        longitude: 1,
+        webPage: 'https'
+      } as MarketEntity;
+      const creation = await service.create(newMarket);
+      expect(creation).toBeNull();
+    } catch(error) {
+      expect(error).toHaveProperty("message", "El nombre del supermercado debe tener más de 10 caracteres");
+    }
+  });
+
   it('should be able to create a market', async () => {
     try {
       const newMarket = {
@@ -71,7 +86,6 @@ describe('Market Service', () => {
     expect(foundMarket.name).toEqual(requiredMarket.name);
   });
 
-
   it('should not be able to find a market if it does not exist', async () => {
     try {
       const foundMarket: MarketEntity = await service.findOne("987654345");
@@ -95,6 +109,16 @@ describe('Market Service', () => {
       expect(foundMarket).toBeNull();
     } catch (error) {
       expect(error).toHaveProperty("message", "El supermercado no fue encontrado");
+    }
+  });
+
+  it('should not be able to update a market if its name does not have at least 10 characters', async () => {
+    try {
+      const [ marketToUpdate ] = markets;
+      const foundMarket: MarketEntity = await service.update({...marketToUpdate, name: "Market"});
+      expect(foundMarket).toBeNull();
+    } catch (error) {
+      expect(error).toHaveProperty("message", "El nombre del supermercado debe tener más de 10 caracteres");
     }
   });
 

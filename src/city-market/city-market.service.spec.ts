@@ -82,15 +82,83 @@ describe('CityMarketService', () => {
     expect(add.markets).toHaveLength(1);
   });
 
+  it('should not be able to find supermarkets from city if city does not exist', async () => {
+    try {
+      const markets = await service.findSupermarketsFromCity("123");
+      expect(markets).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "La ciudad no fue encontrada");
+    }
+  });
+
   it('should be able to find supermarkets from city', async () => {
     const supermarkets =  await service.findSupermarketsFromCity(cities[0].id);
     expect(supermarkets).toHaveLength(0);
+  });
+
+  it('should not be able to find supermarket from city if city does not exist', async () => {
+    try {
+      const marketFound = await service.findSupermarketFromCity("123", markets[0].id);
+      expect(marketFound).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "La ciudad no fue encontrada");
+    }
+  });
+
+  it('should not be able to find supermarket from city if supermarket does not exist', async () => {
+    try {
+      const marketFound = await service.findSupermarketFromCity(cities[0].id, "123");
+      expect(marketFound).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "El supermercado no fue encontrado");
+    }
   });
 
   it('should be able to find a supermarket from a city', async () => {
     await service.addSupermarketToCity(cities[0].id, markets[0].id);
     const market = await service.findSupermarketFromCity(cities[0].id, markets[0].id);
     expect(market.id).toEqual(markets[0].id);
+  });
+
+  it('should not be able to update a supermarket from a city if city does not exists', async () => {
+    try {
+      const addition = await service.updateSupermarketsFromCity("1232", []);
+      expect(addition).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "La ciudad no fue encontrada");
+    }
+  });
+
+  it('should not be able to update a supermarket from a city if market does not exists', async () => {
+    try {
+      const addition = await service.updateSupermarketsFromCity(cities[0].id, ["123"]);
+      expect(addition).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "El supermercado no fue encontrado");
+    }
+  });
+
+  it('should be able to update supermarkets from a city', async () => {
+    const city = await service.updateSupermarketsFromCity(cities[0].id, [markets[0].id]);
+    expect(city.markets).toHaveLength(1);
+  });
+
+  it('should not be able to delete a supermarket from a city if city does not exists', async () => {
+    try {
+      const addition = await service.deleteSupermarketFromCity("1232", markets[0].id);
+      expect(addition).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "La ciudad no fue encontrada");
+    }
+  });
+
+  it('should not be able to delete a supermarket from a city if supermarket is not associated', async () => {
+    try {
+      const addition = await service.deleteSupermarketFromCity(cities[0].id, markets[0].id);
+      expect(addition).toBeNull();
+    } catch (err) {
+      expect(err).toHaveProperty("message", "El supermercado no se encuentra asociado");
+    }
   });
 
   it('should be able to delete a supermarket from a city', async () => {
