@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CityEntity } from 'src/city/city.entity';
-import { MarketEntity } from 'src/market/market.entity';
-import { BusinessError, BusinessLogicException } from 'src/shared/errors/business-errors';
+import { CityEntity } from '../city/city.entity';
+import { MarketEntity } from '../market/market.entity';
+import { BusinessError, BusinessLogicException } from '../shared/errors/business-errors';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -41,7 +41,7 @@ export class CityMarketService {
             throw new BusinessLogicException("La ciudad no fue encontrada", BusinessError.NOT_FOUND);
         }
 
-        const requiredMarket = city.markets.filter((market) => market.id === marketId);
+        const requiredMarket = city.markets.find((market) => market.id === marketId);
         if (!requiredMarket) {
             throw new BusinessLogicException("El supermercado no fue encontrado", BusinessError.NOT_FOUND);
         }

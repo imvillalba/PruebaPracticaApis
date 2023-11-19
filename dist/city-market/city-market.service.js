@@ -48,7 +48,7 @@ let CityMarketService = class CityMarketService {
         if (!city) {
             throw new business_errors_1.BusinessLogicException("La ciudad no fue encontrada", business_errors_1.BusinessError.NOT_FOUND);
         }
-        const requiredMarket = city.markets.filter((market) => market.id === marketId);
+        const requiredMarket = city.markets.find((market) => market.id === marketId);
         if (!requiredMarket) {
             throw new business_errors_1.BusinessLogicException("El supermercado no fue encontrado", business_errors_1.BusinessError.NOT_FOUND);
         }
